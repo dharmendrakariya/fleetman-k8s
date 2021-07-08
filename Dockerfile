@@ -1,8 +1,9 @@
 FROM maven:3.5.4-jdk-8-alpine AS build
-COPY src /usr/src/app/src
-COPY pom.xml /usr/src/app
+WORKDIR /usr/src/app
+COPY . .
+# COPY src /usr/src/app/src
+# COPY pom.xml /usr/src/app
 RUN mvn -f /usr/src/app/pom.xml clean package 
-
 
 FROM openjdk:8u131-jdk-alpine
 WORKDIR /usr/local/bin/
