@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: demo
+  name: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: demo
+    spec:
+      volumes:
+      - name: state-file
+        configMap:
+          name: my-config
+      containers:
+      - image: dharmendrakariya/fleetman:test
+        name: fleetman
+        ports:
+        - containerPort: 8080
+        env:
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+        - name: KEY1
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: KEY1
+        - name: KEY2
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: KEY2
+        - name: KEY3
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: KEY3
+        volumeMounts:
+        - name: state-file
+          mountPath: /root/state.csv
+          subPath: state.csv
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: demo
+  name: demo
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: demo
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  state.csv: |+
+    hello123
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+stringData:
+    KEY1: "value1"
+    KEY2: "value2"
+    KEY3: "value3"
