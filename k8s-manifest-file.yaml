@@ -57,7 +57,6 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   labels:
     app: demo
   name: demo
@@ -70,8 +69,6 @@ spec:
   selector:
     app: demo
   type: ClusterIP
-status:
-  loadBalancer: {}
 
 ---
 
@@ -90,7 +87,7 @@ kind: Secret
 metadata:
   name: mysecret
 type: Opaque
-stringData:
-    KEY1: "value1"
-    KEY2: "value2"
-    KEY3: "value3"
+data:
+    KEY1: dmFsdWUxCg==
+    KEY2: dmFsdWUyCg==
+    KEY3: dmFsdWUzCg==
